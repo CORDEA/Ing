@@ -10,6 +10,8 @@ import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -17,6 +19,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun Home(viewModel: HomeViewModel) {
+    val items by viewModel.items.collectAsState()
     Scaffold(
         topBar = {
             MediumTopAppBar(
@@ -25,13 +28,17 @@ fun Home(viewModel: HomeViewModel) {
         }
     ) { padding ->
         LazyColumn(contentPadding = padding) {
-            item { Item() }
+            items.map {
+                item {
+                    Item(it)
+                }
+            }
         }
     }
 }
 
 @Composable
-private fun Item() {
+private fun Item(viewModel: HomeItemViewModel) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -41,7 +48,7 @@ private fun Item() {
             modifier = Modifier
                 .padding(horizontal = 16.dp)
                 .align(Alignment.CenterVertically),
-            text = ""
+            text = viewModel.title
         )
     }
 }

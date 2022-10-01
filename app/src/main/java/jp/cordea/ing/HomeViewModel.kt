@@ -1,4 +1,31 @@
 package jp.cordea.ing
 
-class HomeViewModel {
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import jp.cordea.ing.repository.WordRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+
+class HomeViewModel(
+    private val repository: WordRepository
+) : ViewModel() {
+    private val _items = MutableStateFlow<List<HomeItemViewModel>>(emptyList())
+    val items get() = _items.asStateFlow()
+
+    init {
+        refresh()
+    }
+
+    private fun refresh() {
+        viewModelScope.launch {
+            val words = repository.findAll()
+            _items.value = words.map { HomeItemViewModel(it.id, it.question) }
+        }
+    }
 }
+
+data class HomeItemViewModel(
+    val id: Int,
+    val title: String
+)
