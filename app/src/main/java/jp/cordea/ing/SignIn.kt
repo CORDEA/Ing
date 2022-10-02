@@ -1,6 +1,5 @@
 package jp.cordea.ing
 
-import android.app.Activity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
@@ -15,25 +14,24 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.navigation.NavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun SignIn(viewModel: SignInViewModel) {
+fun SignIn(viewModel: SignInViewModel, navController: NavController) {
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
         onResult = { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                runCatching {
-                    GoogleSignIn
-                        .getSignedInAccountFromIntent(result.data)
-                        .getResult(ApiException::class.java)
-                }
-                    .onSuccess(viewModel::onSignInSucceeded)
-                    .onFailure(viewModel::onSignInFailed)
+            runCatching {
+                GoogleSignIn
+                    .getSignedInAccountFromIntent(result.data)
+                    .getResult(ApiException::class.java)
             }
+                .onSuccess(viewModel::onSignInSucceeded)
+                .onFailure(viewModel::onSignInFailed)
         }
     )
     val event by viewModel.event.collectAsState(initial = null)
@@ -41,6 +39,9 @@ fun SignIn(viewModel: SignInViewModel) {
         when (val e = event) {
             is SignInEvent.StartSignIn -> {
                 e.request.launchWith(launcher)
+            }
+            SignInEvent.ToHome -> {
+                navController.navigate(TAG_HOME)
             }
             null -> {}
         }

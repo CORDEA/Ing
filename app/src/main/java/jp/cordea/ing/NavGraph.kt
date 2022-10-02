@@ -7,13 +7,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 
 private const val TAG_SIGN_IN = "sign_in"
-private const val TAG_HOME = "home"
+const val TAG_HOME = "home"
 
 @Composable
 fun NavGraph() {
-    NavHost(navController = rememberNavController(), startDestination = TAG_SIGN_IN) {
+    val navController = rememberNavController()
+    NavHost(navController = navController, startDestination = TAG_SIGN_IN) {
         composable(route = TAG_SIGN_IN) {
-            SignIn(hiltViewModel())
+            SignIn(hiltViewModel(), navController)
         }
         composable(route = TAG_HOME) {
             Home(hiltViewModel())

@@ -34,6 +34,7 @@ class SignInViewModel @Inject constructor(
             viewModelScope.launch {
                 val token = requestAuthTokenUseCase.execute(it, account.grantedScopes)
                 storeAuthTokenUseCase.execute(token)
+                _event.emit(SignInEvent.ToHome)
             }
         }
     }
@@ -44,4 +45,5 @@ class SignInViewModel @Inject constructor(
 
 sealed class SignInEvent {
     class StartSignIn(val request: SignInRequest) : SignInEvent()
+    object ToHome : SignInEvent()
 }
