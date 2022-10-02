@@ -6,6 +6,9 @@ plugins {
     id 'kotlinx-serialization'
 }
 
+def props = new Properties();
+file("app.properties").withInputStream { props.load(it) }
+
 android {
     namespace 'jp.cordea.ing'
     compileSdk 33
@@ -23,6 +26,13 @@ android {
         }
     }
 
+    flavorDimensions "app"
+    productFlavors {
+        dev {
+            dimension "app"
+            buildConfigField "String", "SCRIPT_ID", "\"${props.getProperty("script.id")}\""
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false

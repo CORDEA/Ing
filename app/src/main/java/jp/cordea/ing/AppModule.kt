@@ -5,6 +5,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import jp.cordea.ing.api.WordApi
 import jp.cordea.ing.usecase.GetAuthTokenUseCase
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
@@ -62,4 +63,9 @@ object AppModule {
             )
             .client(client)
             .build()
+
+    @Provides
+    @Singleton
+    fun provideWordApi(retrofit: Retrofit): WordApi =
+        retrofit.create(WordApi::class.java)
 }
