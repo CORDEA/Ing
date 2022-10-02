@@ -7,6 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import jp.cordea.ing.usecase.RequestAuthTokenUseCase
 import jp.cordea.ing.usecase.SignInRequest
 import jp.cordea.ing.usecase.SignInUseCase
+import jp.cordea.ing.usecase.StoreAuthTokenUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
@@ -15,6 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SignInViewModel @Inject constructor(
     private val signInUseCase: SignInUseCase,
+    private val storeAuthTokenUseCase: StoreAuthTokenUseCase,
     private val requestAuthTokenUseCase: RequestAuthTokenUseCase
 ) : ViewModel() {
     private val _event = MutableSharedFlow<SignInEvent>()
@@ -31,6 +33,7 @@ class SignInViewModel @Inject constructor(
         account.account?.let {
             viewModelScope.launch {
                 val token = requestAuthTokenUseCase.execute(it, account.grantedScopes)
+                storeAuthTokenUseCase.execute(token)
             }
         }
     }
