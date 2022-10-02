@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import dagger.hilt.android.lifecycle.HiltViewModel
+import jp.cordea.ing.usecase.RequestAuthTokenUseCase
 import jp.cordea.ing.usecase.SignInRequest
 import jp.cordea.ing.usecase.SignInUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -13,7 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignInViewModel @Inject constructor(
-    private val signInUseCase: SignInUseCase
+    private val signInUseCase: SignInUseCase,
+    private val requestAuthTokenUseCase: RequestAuthTokenUseCase
 ) : ViewModel() {
     private val _event = MutableSharedFlow<SignInEvent>()
     val event = _event.asSharedFlow()
@@ -26,7 +28,11 @@ class SignInViewModel @Inject constructor(
     }
 
     fun onSignInSucceeded(account: GoogleSignInAccount) {
-
+        account.account?.let {
+            viewModelScope.launch {
+                val token = requestAuthTokenUseCase.execute(it, account.grantedScopes)
+            }
+        }
     }
 
     fun onSignInFailed(throwable: Throwable) {
