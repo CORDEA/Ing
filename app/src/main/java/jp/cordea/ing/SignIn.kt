@@ -9,10 +9,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.SignInButton
+import com.google.android.gms.common.api.ApiException
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -21,10 +26,25 @@ fun SignIn(viewModel: SignInViewModel) {
         contract = ActivityResultContracts.StartActivityForResult(),
         onResult = { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                // TODO
+                runCatching {
+                    GoogleSignIn
+                        .getSignedInAccountFromIntent(result.data)
+                        .getResult(ApiException::class.java)
+                }
+                    .onSuccess(viewModel::onSignInSucceeded)
+                    .onFailure(viewModel::onSignInFailed)
             }
         }
     )
+    val event by viewModel.event.collectAsState(initial = null)
+    LaunchedEffect(event) {
+        when (val e = event) {
+            is SignInEvent.StartSignIn -> {
+                e.request.launchWith(launcher)
+            }
+            null -> {}
+        }
+    }
     Scaffold { padding ->
         Box(
             modifier = Modifier
