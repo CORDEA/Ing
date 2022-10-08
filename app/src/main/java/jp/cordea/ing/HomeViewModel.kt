@@ -16,6 +16,8 @@ class HomeViewModel @Inject constructor(
     private val _items = MutableStateFlow<List<HomeItemViewModel>>(emptyList())
     val items get() = _items.asStateFlow()
 
+    private lateinit var words: List<Word>
+
     init {
         refresh()
     }
@@ -23,12 +25,28 @@ class HomeViewModel @Inject constructor(
     private fun refresh() {
         viewModelScope.launch {
             val words = repository.findAll()
-            _items.value = words.map { HomeItemViewModel(it.id, it.question) }
+            _items.value = words.map {
+                HomeItemViewModel(it.id, it.question) {
+                    onItemClicked(it.id)
+                }
+            }
+        }
+    }
+
+    private fun onItemClicked(id: Int) {
+        val word = words.first { it.id == id }
+        _items.value = _items.value.map {
+            if (id == it.id) {
+                it.copy(title = word.answer)
+            } else {
+                it
+            }
         }
     }
 }
 
 data class HomeItemViewModel(
     val id: Int,
-    val title: String
+    val title: String,
+    val onClick: () -> Unit
 )

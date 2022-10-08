@@ -1,5 +1,6 @@
 package jp.cordea.ing
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -43,6 +44,7 @@ private fun Item(viewModel: HomeItemViewModel) {
         modifier = Modifier
             .fillMaxWidth()
             .requiredHeight(64.dp)
+            .clickable { viewModel.onClick() }
     ) {
         Text(
             modifier = Modifier
