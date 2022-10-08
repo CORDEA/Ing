@@ -31,8 +31,14 @@ class HomeViewModel @Inject constructor(
 
     private fun refresh() {
         viewModelScope.launch {
-            val words = repository.findAll()
-            _items.value = toItems(words)
+            runCatching {
+                val response = repository.findAll()
+                words = response
+                _items.value = toItems(response)
+            }.onFailure {
+                // TODO
+                it.printStackTrace()
+            }
         }
     }
 
