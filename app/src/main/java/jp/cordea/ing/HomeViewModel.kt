@@ -25,11 +25,7 @@ class HomeViewModel @Inject constructor(
     private fun refresh() {
         viewModelScope.launch {
             val words = repository.findAll()
-            _items.value = words.map {
-                HomeItemViewModel(it.id, it.question) {
-                    onItemClicked(it.id)
-                }
-            }
+            _items.value = toItems(words)
         }
     }
 
@@ -43,6 +39,17 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
+
+    fun onRefreshClicked() {
+        _items.value = toItems(words)
+    }
+
+    private fun toItems(words: List<Word>) =
+        words.map {
+            HomeItemViewModel(it.id, it.question) {
+                onItemClicked(it.id)
+            }
+        }
 }
 
 data class HomeItemViewModel(
