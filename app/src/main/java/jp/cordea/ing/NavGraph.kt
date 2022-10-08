@@ -17,7 +17,7 @@ fun NavGraph() {
             SignIn(hiltViewModel(), navController)
         }
         composable(route = TAG_HOME) {
-            Home(hiltViewModel())
+            Home(hiltViewModel(), navController)
         }
     }
 }

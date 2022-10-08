@@ -7,18 +7,30 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun Home(viewModel: HomeViewModel) {
+fun Home(viewModel: HomeViewModel, navController: NavController) {
+    val event by viewModel.event.collectAsState(initial = null)
+    LaunchedEffect(event) {
+        when (event) {
+            HomeEvent.Back -> {
+                navController.popBackStack()
+            }
+            null -> {}
+        }
+    }
     val items by viewModel.items.collectAsState()
     Scaffold(
         topBar = {
@@ -31,6 +43,14 @@ fun Home(viewModel: HomeViewModel) {
                         Icon(
                             imageVector = Icons.Default.Refresh,
                             contentDescription = "Refresh"
+                        )
+                    }
+                    IconButton(onClick = {
+                        viewModel.onSignOutClicked()
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.ExitToApp,
+                            contentDescription = "Sign out"
                         )
                     }
                 }
