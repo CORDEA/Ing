@@ -1,9 +1,14 @@
 package jp.cordea.ing
 
+import android.content.Context
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import jp.cordea.ing.api.WordApi
 import jp.cordea.ing.usecase.GetAuthTokenUseCase
@@ -68,4 +73,16 @@ object AppModule {
     @Singleton
     fun provideWordApi(retrofit: Retrofit): WordApi =
         retrofit.create(WordApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideGoogleSignInClient(
+        @ApplicationContext context: Context
+    ): GoogleSignInClient =
+        GoogleSignIn.getClient(
+            context,
+            GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build()
+        )
 }
