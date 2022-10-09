@@ -40,7 +40,6 @@ class HomeViewModel @Inject constructor(
                 _items.value = toItems(response)
                 _loadingState.value = LoadingState.LOADED
             }.onFailure {
-                // TODO
                 it.printStackTrace()
                 _loadingState.value = LoadingState.FAILED
             }
@@ -60,6 +59,11 @@ class HomeViewModel @Inject constructor(
 
     fun onRefreshClicked() {
         _items.value = toItems(words)
+    }
+
+    fun onReloadClicked() {
+        _loadingState.value = LoadingState.LOADING
+        refresh()
     }
 
     fun onSignOutClicked() {

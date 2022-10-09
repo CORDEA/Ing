@@ -44,17 +44,17 @@ fun Home(viewModel: HomeViewModel, navController: NavController) {
                                     contentDescription = "Refresh"
                                 )
                             }
-                            IconButton(onClick = {
-                                viewModel.onSignOutClicked()
-                            }) {
-                                Icon(
-                                    imageVector = Icons.Default.ExitToApp,
-                                    contentDescription = "Sign out"
-                                )
-                            }
                         }
                         LoadingState.LOADING -> {}
                         LoadingState.FAILED -> {}
+                    }
+                    IconButton(onClick = {
+                        viewModel.onSignOutClicked()
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.ExitToApp,
+                            contentDescription = "Sign out"
+                        )
                     }
                 }
             )
@@ -69,7 +69,16 @@ fun Home(viewModel: HomeViewModel, navController: NavController) {
                 )
             }
             LoadingState.LOADED -> Body(viewModel, padding)
-            LoadingState.FAILED -> TODO()
+            LoadingState.FAILED -> Box(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                ElevatedButton(
+                    onClick = { viewModel.onReloadClicked() },
+                    modifier = Modifier.align(Alignment.Center)
+                ) {
+                    Text(text = "Reload")
+                }
+            }
         }
     }
 }
