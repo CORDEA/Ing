@@ -41,7 +41,7 @@ fun SignIn(viewModel: SignInViewModel, navController: NavController) {
                 e.request.launchWith(launcher)
             }
             SignInEvent.ToHome -> {
-                navController.navigate(TAG_HOME)
+                navController.navigate(Tag.HOME.value)
             }
             null -> {}
         }
