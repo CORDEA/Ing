@@ -3,7 +3,7 @@ package jp.cordea.ing
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import jp.cordea.ing.repository.WordRepository
+import jp.cordea.ing.usecase.GetWordsUseCase
 import jp.cordea.ing.usecase.SignOutUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val repository: WordRepository,
+    private val getWordsUseCase: GetWordsUseCase,
     private val signOutUseCase: SignOutUseCase
 ) : ViewModel() {
     private val _event = MutableSharedFlow<HomeEvent>()
@@ -32,7 +32,7 @@ class HomeViewModel @Inject constructor(
     private fun refresh() {
         viewModelScope.launch {
             runCatching {
-                val response = repository.findAll()
+                val response = getWordsUseCase.execute()
                 words = response
                 _items.value = toItems(response)
             }.onFailure {
