@@ -23,6 +23,9 @@ class HomeViewModel @Inject constructor(
     private val _items = MutableStateFlow<List<HomeItemViewModel>>(emptyList())
     val items get() = _items.asStateFlow()
 
+    private val _loadingState = MutableStateFlow(LoadingState.LOADING)
+    val loadingState get() = _loadingState.asStateFlow()
+
     private lateinit var words: List<Word>
 
     init {
@@ -35,9 +38,11 @@ class HomeViewModel @Inject constructor(
                 val response = getWordsUseCase.execute()
                 words = response
                 _items.value = toItems(response)
+                _loadingState.value = LoadingState.LOADED
             }.onFailure {
                 // TODO
                 it.printStackTrace()
+                _loadingState.value = LoadingState.FAILED
             }
         }
     }
@@ -80,4 +85,10 @@ data class HomeItemViewModel(
 
 sealed class HomeEvent {
     object Back : HomeEvent()
+}
+
+enum class LoadingState {
+    LOADING,
+    LOADED,
+    FAILED
 }

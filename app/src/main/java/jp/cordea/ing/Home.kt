@@ -1,10 +1,7 @@
 package jp.cordea.ing
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExitToApp
@@ -31,37 +28,59 @@ fun Home(viewModel: HomeViewModel, navController: NavController) {
             null -> {}
         }
     }
-    val items by viewModel.items.collectAsState()
+    val loadingState by viewModel.loadingState.collectAsState()
     Scaffold(
         topBar = {
             MediumTopAppBar(
                 title = { Text("Ing") },
                 actions = {
-                    IconButton(onClick = {
-                        viewModel.onRefreshClicked()
-                    }) {
-                        Icon(
-                            imageVector = Icons.Default.Refresh,
-                            contentDescription = "Refresh"
-                        )
-                    }
-                    IconButton(onClick = {
-                        viewModel.onSignOutClicked()
-                    }) {
-                        Icon(
-                            imageVector = Icons.Default.ExitToApp,
-                            contentDescription = "Sign out"
-                        )
+                    when (loadingState) {
+                        LoadingState.LOADED -> {
+                            IconButton(onClick = {
+                                viewModel.onRefreshClicked()
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Default.Refresh,
+                                    contentDescription = "Refresh"
+                                )
+                            }
+                            IconButton(onClick = {
+                                viewModel.onSignOutClicked()
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Default.ExitToApp,
+                                    contentDescription = "Sign out"
+                                )
+                            }
+                        }
+                        LoadingState.LOADING -> {}
+                        LoadingState.FAILED -> {}
                     }
                 }
             )
         }
     ) { padding ->
-        LazyColumn(contentPadding = padding) {
-            items.map {
-                item {
-                    Item(it)
-                }
+        when (loadingState) {
+            LoadingState.LOADING -> Box(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+            LoadingState.LOADED -> Body(viewModel, padding)
+            LoadingState.FAILED -> TODO()
+        }
+    }
+}
+
+@Composable
+private fun Body(viewModel: HomeViewModel, padding: PaddingValues) {
+    val items by viewModel.items.collectAsState()
+    LazyColumn(contentPadding = padding) {
+        items.map {
+            item {
+                Item(it)
             }
         }
     }
