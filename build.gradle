@@ -1,7 +1,7 @@
 buildscript {
     ext {
-        compose_version = '1.3.0-beta03'
-        dagger_version = '2.44'
+        compose_version = '1.6.0-alpha06'
+        dagger_version = '2.48'
     }
     dependencies {
         classpath "com.google.dagger:hilt-android-gradle-plugin:$dagger_version"
