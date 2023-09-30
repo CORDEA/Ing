@@ -50,7 +50,13 @@ class HomeViewModel @Inject constructor(
         val word = words.first { it.id == id }
         _items.value = _items.value.map {
             if (id == it.id) {
-                it.copy(title = word.answer)
+                it.copy(
+                    title = if (it.title == word.question) {
+                        word.answer
+                    } else {
+                        word.question
+                    }
+                )
             } else {
                 it
             }
@@ -88,7 +94,7 @@ data class HomeItemViewModel(
 )
 
 sealed class HomeEvent {
-    object Back : HomeEvent()
+    data object Back : HomeEvent()
 }
 
 enum class LoadingState {
