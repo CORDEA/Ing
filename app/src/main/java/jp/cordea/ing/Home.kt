@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
@@ -25,6 +26,7 @@ fun Home(viewModel: HomeViewModel, navController: NavController) {
             HomeEvent.Back -> {
                 navController.popBackStack()
             }
+
             null -> {}
         }
     }
@@ -45,6 +47,7 @@ fun Home(viewModel: HomeViewModel, navController: NavController) {
                                 )
                             }
                         }
+
                         LoadingState.LOADING -> {}
                         LoadingState.FAILED -> {}
                     }
@@ -68,6 +71,7 @@ fun Home(viewModel: HomeViewModel, navController: NavController) {
                     modifier = Modifier.align(Alignment.Center)
                 )
             }
+
             LoadingState.LOADED -> Body(viewModel, padding)
             LoadingState.FAILED -> Box(
                 modifier = Modifier.fillMaxSize()
@@ -102,12 +106,20 @@ private fun Item(viewModel: HomeItemViewModel) {
             .fillMaxWidth()
             .requiredHeight(64.dp)
             .clickable { viewModel.onClick() }
+            .padding(start = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .align(Alignment.CenterVertically),
             text = viewModel.title
         )
+        IconButton(
+            onClick = {
+            }) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Default.OpenInNew,
+                contentDescription = "Open on the web"
+            )
+        }
     }
 }

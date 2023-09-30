@@ -63,6 +63,10 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    private fun onItemIconClicked(id: Int) {
+
+    }
+
     fun onRefreshClicked() {
         _items.value = toItems(words)
     }
@@ -81,16 +85,19 @@ class HomeViewModel @Inject constructor(
 
     private fun toItems(words: List<Word>) =
         words.map {
-            HomeItemViewModel(it.id, it.question) {
+            HomeItemViewModel(it.id, it.question, onClick = {
                 onItemClicked(it.id)
-            }
+            }, onIconClick = {
+                onItemIconClicked(it.id)
+            })
         }
 }
 
 data class HomeItemViewModel(
     val id: Int,
     val title: String,
-    val onClick: () -> Unit
+    val onClick: () -> Unit,
+    val onIconClick: () -> Unit,
 )
 
 sealed class HomeEvent {
