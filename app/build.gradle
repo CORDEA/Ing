@@ -11,12 +11,12 @@ file("app.properties").withInputStream { props.load(it) }
 
 android {
     namespace 'jp.cordea.ing'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "jp.cordea.ing"
         minSdk 31
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
