@@ -40,10 +40,15 @@ class SignInViewModel @Inject constructor(
     }
 
     fun onSignInFailed(throwable: Throwable) {
+        val message = throwable.localizedMessage ?: throwable.message ?: return
+        viewModelScope.launch {
+            _event.emit(SignInEvent.ShowError(message))
+        }
     }
 }
 
 sealed class SignInEvent {
     class StartSignIn(val request: SignInRequest) : SignInEvent()
-    object ToHome : SignInEvent()
+    data object ToHome : SignInEvent()
+    class ShowError(val message: String) : SignInEvent()
 }
