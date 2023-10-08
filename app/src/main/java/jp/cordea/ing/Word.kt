@@ -8,7 +8,8 @@ data class Word(
     val id: Int,
     val question: String,
     val answer: String,
-    val category: WordCategory
+    val category: WordCategory,
+    val link: String
 )
 
 @Serializable

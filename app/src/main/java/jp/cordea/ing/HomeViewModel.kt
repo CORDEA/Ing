@@ -64,7 +64,9 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun onItemIconClicked(id: Int) {
-
+        viewModelScope.launch {
+            _event.emit(HomeEvent.OpenLink(words.first { it.id == id }.link))
+        }
     }
 
     fun onRefreshClicked() {
@@ -102,6 +104,7 @@ data class HomeItemViewModel(
 
 sealed class HomeEvent {
     data object Back : HomeEvent()
+    class OpenLink(val link: String) : HomeEvent()
 }
 
 enum class LoadingState {

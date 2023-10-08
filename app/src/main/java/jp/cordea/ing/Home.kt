@@ -14,6 +14,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
@@ -21,10 +22,15 @@ import androidx.navigation.NavController
 @OptIn(ExperimentalMaterial3Api::class)
 fun Home(viewModel: HomeViewModel, navController: NavController) {
     val event by viewModel.event.collectAsState(initial = null)
+    val uriHandler = LocalUriHandler.current
     LaunchedEffect(event) {
-        when (event) {
+        when (val e = event) {
             HomeEvent.Back -> {
                 navController.popBackStack()
+            }
+
+            is HomeEvent.OpenLink -> {
+                uriHandler.openUri(e.link)
             }
 
             null -> {}
@@ -115,6 +121,7 @@ private fun Item(viewModel: HomeItemViewModel) {
         )
         IconButton(
             onClick = {
+                viewModel.onIconClick()
             }) {
             Icon(
                 imageVector = Icons.AutoMirrored.Default.OpenInNew,
